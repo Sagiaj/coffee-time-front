@@ -1,0 +1,2 @@
+export const AUTH_USER_LOGIN = 'AUTH_USER_LOGIN';
+export const AUTH_USER_REGISTER = 'AUTH_USER_REGISTER';

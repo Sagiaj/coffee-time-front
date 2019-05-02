@@ -4,17 +4,15 @@ import App from './App.vue';
 import router from '@/router/router';
 import store from './store/index';
 import Axios from 'axios';
-
 Vue.config.productionTip = false;
 Vue.prototype.$http = Axios;
-const accessToken = localStorage.getItem('access_token');
-
+var accessToken = localStorage.getItem('access_token');
 if (accessToken) {
-  Vue.prototype.$http.defaults.headers.common['Authorization'] = accessToken;
+    Vue.prototype.$http.defaults.headers.common['Authorization'] = accessToken;
 }
-
 new Vue({
-  router,
-  store,
-  render: (h) => h(App),
+    router: router,
+    store: store,
+    render: function (h) { return h(App); },
 }).$mount('#app');
+//# sourceMappingURL=main.js.map

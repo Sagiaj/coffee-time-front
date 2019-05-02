@@ -1,0 +1,48 @@
+<template>
+    <div>
+        <v-layout row wrap text-xs-center class="grey darken-4">
+            <v-flex class="xs1">
+                <div style="height: 100%;position:relative;">
+                    <v-btn bottom left absolute fab small outline color="teal lighten-1" @click.stop="drawer = !drawer" class="ml-2">
+                        <v-icon>list</v-icon>
+                    </v-btn>
+                </div>
+            </v-flex>
+            <v-flex class="xs10 pt-4 pb-4">
+                <h3> Welcome to Coffee Time! </h3>
+            </v-flex>
+        </v-layout>
+
+        <v-navigation-drawer temporary v-model="drawer" absolute>
+            <v-toolbar flat>
+                <v-list>
+                    <v-list-tile>
+                        <v-list-tile-title class="title">
+                            <h5>Welcome to Coffee Time!</h5>
+                        </v-list-tile-title>
+                    </v-list-tile>
+                </v-list>
+            </v-toolbar>
+            <v-divider></v-divider>
+            <v-list dense class="pt-0">
+                <v-list-tile avatar>
+                    <v-icon color="teal">settings</v-icon>
+                </v-list-tile>
+            </v-list>
+        </v-navigation-drawer>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'Navbar',
+    components: {
+
+    },
+    data() {
+        return {
+            drawer: null,
+        };
+    },
+};
+</script>
