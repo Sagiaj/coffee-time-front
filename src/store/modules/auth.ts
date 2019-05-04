@@ -40,22 +40,14 @@ const actions = {
             return Promise.reject(err);
         }
     },
-    getUser: async ({ commit, rootState }: any) => {
+    getVerifiedUserByToken: async ({ commit }: any): Promise<any> => {
         try {
-            let res = state.user;
-            console.log('now the auth is:', res);
-        } catch (err) {
-            console.log(`Errored in Auth/getUser: ${err}`);
-            return Promise.reject(err);
-        }
-    },
-    getVerifiedUserByToken: async ({ commit }: any, token: string): Promise<any> => {
-        try {
-            let { user } = await AuthApi.getVerifiedUserByToken(token);
-            console.log(`now check user: ${Object.values(user)}`);
+            let { user } = await AuthApi.getVerifiedUserByToken();
             commit(types.AUTH_USER_LOGIN, user);
+            return state.user;
         } catch (err) {
             console.log(`Errored in Auth/getVerifiedUserByToken: ${err}`);
+            return Promise.reject(err);
         }
     }
 };

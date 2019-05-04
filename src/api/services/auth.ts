@@ -28,10 +28,14 @@ class AuthApi extends AxiosService {
             return Promise.reject(err);
         }
     }
-    async getVerifiedUserByToken (token: string): Promise<any> {
-        let url = `/auth/getVerifiedUserByToken/${token}`;
-        let data = await this.send(url, AxiosService.HTTP_METHODS.get, token);
-        return data;
+    async getVerifiedUserByToken(): Promise<any> {
+        try {
+            let url = `/auth/getVerifiedUserByToken`;
+            let data = await this.send(url, AxiosService.HTTP_METHODS.get);
+            return data;
+        } catch (err) {
+            return Promise.reject(err);
+        }
     }
 }
 const authApi = new AuthApi();

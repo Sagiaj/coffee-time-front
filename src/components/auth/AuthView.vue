@@ -47,7 +47,7 @@ export default {
         ...mapGetters(['user']),
     },
     methods: {
-        ...mapActions(['authUserLogin', 'authUserRegister', 'getUser',]),
+        ...mapActions(['authUserLogin', 'authUserRegister', 'getVerifiedUserByToken',]),
         async login({username, password}) {
             try {
                 this.isSubmitting = true;
@@ -81,8 +81,15 @@ export default {
             this.isSubmitting = false;
         },
     },
-    created() {
-        console.log('mounted', this.getUser())
+    async created() {
+        try {
+            let user = await this.getVerifiedUserByToken();
+            if (user.isLoggedIn) {
+                this.goToAuthenticatedHome();
+            }
+        } catch (err) {
+            console.log(`Failed getting verified user.`);
+        }
     },
     data() {
         return {

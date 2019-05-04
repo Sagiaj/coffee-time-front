@@ -1,19 +1,19 @@
 import axios, { AxiosInstance } from 'axios';
 
-// const AXIOS_API_KEY = Symbol.for('@/src/api/services/base/axios');
-// const globalSymbols = Object.getOwnPropertySymbols(globalThis);
-// const hasSymbol = globalSymbols.indexOf(AXIOS_API_KEY) > -1;
-
-// if (!hasSymbol) {
-//     const axiosInstance = axios.create({
-//         baseURL: `${process.env.API_BASE_URL}`
-//     });
-//     globalThis[AXIOS_API_KEY] = axiosInstance;
-// }
-
 const axiosInstance = axios.create({
     baseURL: /*`${process.env.API_BASE_URL}`*/ `${'http://localhost:3333'}`
 });
+
+axiosInstance.interceptors.request.use(
+    async (config: any) => {
+        let token = localStorage.getItem(`access_token`);
+        if (token) {
+            config.headers['Authorization'] = `Bearer ${token}`;
+        }
+        return config;
+    },
+    error => Promise.reject(error)
+);
 
 class AxiosService {
     axios: AxiosInstance;
@@ -28,7 +28,7 @@ class AxiosService {
         this.axios = axiosInstance;
     }
 
-    async send (relative_url: string, method: string, queryParams: any, bodyParams: any = {}) {
+    async send (relative_url: string, method: string, queryParams: any = '', bodyParams: any = {}, additionalHeaders: any = {}) {
         try {
             let response = null;
             switch (method) {

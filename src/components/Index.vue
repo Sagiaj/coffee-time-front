@@ -25,13 +25,16 @@ export default {
     methods: {
         ...mapActions(['getVerifiedUserByToken'])
     },
-    mounted() {
-        console.log('user:', this.user)
+    async mounted() {
+        try {
+            if (!this.user.isLoggedIn) {
+                await this.getVerifiedUserByToken();
+            }
+        } catch (err) {
+            this.$router.push('/auth')
+        }
     },
     async created () {
-        console.log('created')
-        let token = localStorage.getItem('access_token');
-        let user = await this.getVerifiedUserByToken(token);
     },
     data() {
         return {

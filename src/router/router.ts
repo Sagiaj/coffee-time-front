@@ -26,7 +26,7 @@ let router = new Router({
 
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    if (! (localStorage.getItem('access_token')) ) {
+    if (!localStorage.getItem('access_token')) {
       console.log('redirecting bro');
       next({
         path: '/auth',
