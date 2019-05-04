@@ -11,6 +11,11 @@
             <v-flex class="xs10 pt-4 pb-4">
                 <h3> Welcome to Coffee Time! </h3>
             </v-flex>
+            <v-flex xs1 right pt-2 v-if="user.isLoggedIn">
+                <v-btn flat @click="logUserOut()" color="">
+                    <v-icon color="teal">logout</v-icon>
+                </v-btn>
+            </v-flex>
         </v-layout>
 
         <v-navigation-drawer temporary v-model="drawer" absolute>
@@ -28,16 +33,35 @@
                 <v-list-tile avatar>
                     <v-icon color="teal">settings</v-icon>
                 </v-list-tile>
+                <v-list-tile avatar v-if="user.isLoggedIn">
+                    <v-btn flat @click="logUserOut()" color="">
+                        <v-icon color="teal">logout</v-icon>
+                        Logout
+                    </v-btn>
+                </v-list-tile>
             </v-list>
         </v-navigation-drawer>
     </div>
 </template>
 
 <script>
+import { mapGetters, mapActions } from 'vuex';
 export default {
     name: 'Navbar',
     components: {
 
+    },
+    methods: {
+        ...mapActions(['logout']),
+        async logUserOut() {
+            await this.logout();
+            this.$router.push({
+                path: '/auth'
+            });
+        }
+    },
+    computed: {
+        ...mapGetters(['user'])
     },
     data() {
         return {

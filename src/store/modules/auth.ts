@@ -17,6 +17,9 @@ const mutations = {
         state.user.password = password;
         state.user.isLoggedIn = true;
     },
+    [types.AUTH_USER_LOGOUT](state: any): any {
+        state.user = new User();
+    }
 };
 
 const actions = {
@@ -35,6 +38,7 @@ const actions = {
             let { user, token } = await AuthApi.register(username, email, password);
             localStorage.setItem('access_token', token);
             await commit(types.AUTH_USER_REGISTER, user);
+            return state.user;
         } catch (err) {
             console.log(`Errored in Auth/authUserRegister: ${err}`);
             return Promise.reject(err);
@@ -48,6 +52,14 @@ const actions = {
         } catch (err) {
             console.log(`Errored in Auth/getVerifiedUserByToken: ${err}`);
             return Promise.reject(err);
+        }
+    },
+    logout: async ({ commit }: any): Promise<any> => {
+        try {
+            localStorage.removeItem('access_token');
+            commit(types.AUTH_USER_LOGOUT);
+        } catch (err) {
+            console.log(`Errored in Auth/logout: ${err}`);
         }
     }
 };
