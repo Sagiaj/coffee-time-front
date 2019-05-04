@@ -10,13 +10,14 @@ import axios from 'axios';
 //     globalThis[AXIOS_API_KEY] = axiosInstance;
 // }
 var axiosInstance = axios.create({
-    baseURL: "" + process.env.API_BASE_URL
+    baseURL: /*`${process.env.API_BASE_URL}`*/ "" + 'http://localhost:3333'
 });
 var AxiosService = /** @class */ (function () {
     function AxiosService() {
         this.axios = axiosInstance;
     }
     AxiosService.prototype.send = function (relative_url, method, queryParams, bodyParams) {
+        if (bodyParams === void 0) { bodyParams = {}; }
         return tslib_1.__awaiter(this, void 0, void 0, function () {
             var response, _a, err_1;
             return tslib_1.__generator(this, function (_b) {
@@ -38,8 +39,12 @@ var AxiosService = /** @class */ (function () {
                     case 4:
                         response = _b.sent();
                         return [3 /*break*/, 6];
-                    case 5: return [3 /*break*/, 6];
-                    case 6: return [2 /*return*/, Promise.resolve(response)];
+                    case 5: return [2 /*return*/, Promise.reject("Unrecorgnized method " + method)];
+                    case 6:
+                        if (!response || response.status != 200) {
+                            return [2 /*return*/, Promise.reject("Error retrieving user")];
+                        }
+                        return [2 /*return*/, Promise.resolve(response.data)];
                     case 7:
                         err_1 = _b.sent();
                         return [2 /*return*/, Promise.reject(err_1)];

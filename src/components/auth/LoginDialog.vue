@@ -16,7 +16,7 @@
                 <v-container grid-list-md>
                     <v-layout wrap>
                         <v-flex xs12>
-                            <v-text-field v-model="email" color="teal darken-2" label="*Email" required></v-text-field>
+                            <v-text-field v-model="username" color="teal darken-2" label="*Username" required></v-text-field>
                         </v-flex>
                         <v-flex xs12>
                             <v-text-field v-model="password" color="teal darken-2" label="*Password" type="password" required></v-text-field>
@@ -53,18 +53,16 @@ export default {
         cancelDialog() {
             this.$emit('cancelDialog', []);
             this.username = '';
-            this.email = '';
             this.password = '';
         },
         async attemptLogin() {
-            this.$emit('attemptLogin', this.email, this.password);
+            this.$emit('attemptLogin', {username: this.username, password: this.password});
         },
     },
     computed: {},
     data() {
         return {
             username: '',
-            email: '',
             password: ''
         };
     },

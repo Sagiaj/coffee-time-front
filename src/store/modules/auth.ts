@@ -20,35 +20,44 @@ const mutations = {
 };
 
 const actions = {
-    authUserLogin: async ({ commit }: any, {password, username}: any): Promise<any> => {
+    authUserLogin: async ({ commit }: any, {username, password}: any): Promise<any> => {
         try {
-            let res = await AuthApi.login(username, password);
-            let storedUser = res.;
-            console.log('storedUser:', storedUser);
-            await commit(types.AUTH_USER_LOGIN, {username: storedUser.userName, password});
+            let { user, token } = await AuthApi.login(username, password);
+            localStorage.setItem('access_token', token);
+            await commit(types.AUTH_USER_LOGIN, user);
         } catch (err) {
+            console.log(`Errored in Auth/authUserLogin: ${err}`);
             return Promise.reject(err);
         }
     },
-    authUserRegister: async ({ commit, dispatch }: any, params: any): Promise<any> => {
+    authUserRegister: async ({ commit, dispatch }: any, { email, password, username }: any): Promise<any> => {
         try {
-            let {email, password, username} = params;
-            let res = await createUserWithEmailAndPassword(email, password);
-            let response = await db.collection('users').add({email, username, password});
-            localStorage.setItem('username', username);
-            await commit(types.AUTH_USER_REGISTER, {username, email, password});
+            let { user, token } = await AuthApi.register(username, email, password);
+            localStorage.setItem('access_token', token);
+            await commit(types.AUTH_USER_REGISTER, user);
         } catch (err) {
+            console.log(`Errored in Auth/authUserRegister: ${err}`);
             return Promise.reject(err);
         }
     },
-    getUser: async ({ commit }: any) => {
+    getUser: async ({ commit, rootState }: any) => {
         try {
-            let res = await checkUserAuth();
-            console.log('now the auth is:', res)
+            let res = state.user;
+            console.log('now the auth is:', res);
         } catch (err) {
+            console.log(`Errored in Auth/getUser: ${err}`);
             return Promise.reject(err);
         }
     },
+    getVerifiedUserByToken: async ({ commit }: any, token: string): Promise<any> => {
+        try {
+            let { user } = await AuthApi.getVerifiedUserByToken(token);
+            console.log(`now check user: ${Object.values(user)}`);
+            commit(types.AUTH_USER_LOGIN, user);
+        } catch (err) {
+            console.log(`Errored in Auth/getVerifiedUserByToken: ${err}`);
+        }
+    }
 };
 
 const getters = {

@@ -3,7 +3,7 @@
         <v-container grid-list-lg>
             <v-layout row wrap>
                 <v-flex class="xs12" text-xs-center align-center>
-                    You are logged in
+                    <h1> {{ user.username }} </h1>
                 </v-flex>
             </v-layout>
         </v-container>
@@ -13,20 +13,29 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Navbar from '@/components/Navbar';
-import AuthView from '@/components/auth/AuthView.vue';
+
 export default {
     name: 'Index',
     components: {
-        AuthView
+        
     },
     computed: {
+        ...mapGetters(['user'])
+    },
+    methods: {
+        ...mapActions(['getVerifiedUserByToken'])
     },
     mounted() {
-        console.log('mounted bro!')
+        console.log('user:', this.user)
+    },
+    async created () {
+        console.log('created')
+        let token = localStorage.getItem('access_token');
+        let user = await this.getVerifiedUserByToken(token);
     },
     data() {
         return {
-            isLoggedIn: false,
+            
         };
     },
 };
