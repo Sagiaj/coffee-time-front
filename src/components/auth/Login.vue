@@ -25,10 +25,15 @@ export default {
     },
     methods: {
         ...mapActions(['authUserLogin']),
-        async login(username, pass) {
-            await this.authUserLogin(username, pass);
+        async login(username, password) {
+            try {
+                console.log('tring to login')
+                await this.authUserLogin({ username, password });
+                this.goToAuthenticatedHome();
+            } catch (err) {
+                console.log(`From Login.vue/login - error: ${err}`);
+            }
             this.cancelDialog();
-            this.goToAuthenticatedHome();
         },
         cancelDialog() {
             this.loginDialog = false;

@@ -40,7 +40,6 @@ import RegisterDialog from '@/components/auth/RegisterDialog.vue';
 export default {
     name: 'AuthView',
     components: {
-        // Register,
         LoginDialog,
         RegisterDialog
     },
@@ -49,12 +48,16 @@ export default {
     },
     methods: {
         ...mapActions(['authUserLogin', 'authUserRegister', 'getUser',]),
-        async login(email, password) {
-            this.isSubmitting = true;
-            await this.authUserLogin({email, password});
+        async login({username, password}) {
+            try {
+                this.isSubmitting = true;
+                await this.authUserLogin({username, password});
+                this.goToAuthenticatedHome();
+            } catch (err) {
+                console.log(`Failed logging in`);
+            }
             this.cancelDialog();
             this.isSubmitting = false;
-            this.goToAuthenticatedHome();
         },
         cancelDialog() {
             this.loginDialog = false;
@@ -67,14 +70,15 @@ export default {
             });
         },
         async register(username, email, password) {
-            this.isSubmitting = true;
-            await this.authUserRegister({username, email, password})
-            .catch(err => {
-                console.log('errored:', err)
-            });
+            try {
+                this.isSubmitting = true;
+                await this.authUserRegister({username, email, password});
+                this.goToAuthenticatedHome();
+            } catch (err) {
+                console.log(`Failed registering`);
+            }
             this.cancelDialog();
             this.isSubmitting = false;
-            this.goToAuthenticatedHome();
         },
     },
     created() {

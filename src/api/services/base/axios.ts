@@ -12,7 +12,7 @@ import axios, { AxiosInstance } from 'axios';
 // }
 
 const axiosInstance = axios.create({
-    baseURL: `${process.env.API_BASE_URL}`
+    baseURL: /*`${process.env.API_BASE_URL}`*/ `${'http://localhost:3333'}`
 });
 
 class AxiosService {
@@ -28,7 +28,7 @@ class AxiosService {
         this.axios = axiosInstance;
     }
 
-    async send (relative_url: string, method: string, queryParams: any, bodyParams: any) {
+    async send (relative_url: string, method: string, queryParams: any, bodyParams: any = {}) {
         try {
             let response = null;
             switch (method) {
@@ -39,9 +39,13 @@ class AxiosService {
                     response = await this.axios.post(relative_url, bodyParams);
                     break;
                 default:
+                    return Promise.reject(`Unrecorgnized method ${method}`);
                     break;
             }
-            return Promise.resolve(response);
+            if (!response || response.status != 200) {
+                return Promise.reject("Error retrieving user");
+            }
+            return Promise.resolve(response.data);
         } catch (err) {
             return Promise.reject(err);
         }
