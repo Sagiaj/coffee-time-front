@@ -56,15 +56,6 @@ export default {
     components: {
 
     },
-    methods: {
-        ...mapActions(['logout']),
-        async logUserOut() {
-            await this.logout();
-            this.$router.push({
-                path: '/auth'
-            });
-        }
-    },
     computed: {
         ...mapGetters(['user'])
     },
@@ -73,7 +64,14 @@ export default {
             this.$router.push({
                 path: '/buddies'
             });
-        }
+        },
+        ...mapActions(['logout']),
+        async logUserOut() {
+            await this.logout();
+            this.$router.push({
+                path: '/auth'
+            });
+        },
     },
     data() {
         return {
