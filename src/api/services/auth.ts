@@ -17,10 +17,10 @@ class AuthApi extends AxiosService {
             return Promise.reject(err);
         }
     }
-    async register (username: string, email: string, password: string): Promise<any> {
+    async register (username: string, email: string, password: string, buddies: Array<any>): Promise<any> {
         try {
             let url = `/auth/register`;
-            let bodyParams = { username, email, password };
+            let bodyParams = { username, email, password, buddies };
             let data = await this.send(url, AxiosService.HTTP_METHODS.post, null, bodyParams);
             return data;
         } catch (err) {

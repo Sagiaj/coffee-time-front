@@ -2,13 +2,15 @@ import Vuex from 'vuex';
 import Vue from 'vue';
 
 // Import different modules to be used in the store
-// Ex: import mobs from "./modules/mobs"
 import auth from './modules/auth';
-
+import buddies from './modules/buddies';
+import coffeeTimeRoom from './modules/coffee-time-room';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
-        auth
+        auth,
+        buddies,
+        coffeeTimeRoom,
     },
 });

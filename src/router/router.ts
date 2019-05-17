@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Index from '@/components/Index.vue';
 import AuthView from '@/components/auth/AuthView.vue';
+import BuddiesView from '@/components/buddies/BuddiesView';
 
 Vue.use(Router);
 
@@ -19,6 +20,12 @@ let router = new Router({
       path: '/auth',
       name: 'AuthView',
       component: AuthView,
+    },
+    {
+      path: '/buddies',
+      name: 'BuddiesView',
+      component: BuddiesView,
+      meta: {requiresAuth: true}
     },
   ],
 });

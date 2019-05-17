@@ -17,26 +17,31 @@ const mutations = {
         state.user.password = password;
         state.user.isLoggedIn = true;
     },
+    [types.AUTH_SET_BUDDIES](state: any, { buddies }: any): any {
+        state.user.buddies = buddies;
+    },
     [types.AUTH_USER_LOGOUT](state: any): any {
         state.user = new User();
     }
 };
 
 const actions = {
-    authUserLogin: async ({ commit }: any, {username, password}: any): Promise<any> => {
+    authUserLogin: async ({ commit, dispatch }: any, {username, password}: any): Promise<any> => {
         try {
             let { user, token } = await AuthApi.login(username, password);
             localStorage.setItem('access_token', token);
+            dispatch(`setUserBuddies`, [...user.buddies], { root: true });
             await commit(types.AUTH_USER_LOGIN, user);
         } catch (err) {
             console.log(`Errored in Auth/authUserLogin: ${err}`);
             return Promise.reject(err);
         }
     },
-    authUserRegister: async ({ commit, dispatch }: any, { email, password, username }: any): Promise<any> => {
+    authUserRegister: async ({ commit, dispatch, rootState }: any, { email, password, username, buddies }: any): Promise<any> => {
         try {
-            let { user, token } = await AuthApi.register(username, email, password);
+            let { user, token } = await AuthApi.register(username, email, password, buddies);
             localStorage.setItem('access_token', token);
+            dispatch(`setUserBuddies`, [...user.buddies], { root: true });
             await commit(types.AUTH_USER_REGISTER, user);
             return state.user;
         } catch (err) {
@@ -44,9 +49,11 @@ const actions = {
             return Promise.reject(err);
         }
     },
-    getVerifiedUserByToken: async ({ commit }: any): Promise<any> => {
+    getVerifiedUserByToken: async ({ commit, dispatch }: any): Promise<any> => {
         try {
             let { user } = await AuthApi.getVerifiedUserByToken();
+            console.log('asdasdasd')
+            dispatch('setUserBuddies', [...user.buddies], { root: true });
             commit(types.AUTH_USER_LOGIN, user);
             return state.user;
         } catch (err) {

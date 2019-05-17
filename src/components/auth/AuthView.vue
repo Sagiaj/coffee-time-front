@@ -43,11 +43,20 @@ export default {
         LoginDialog,
         RegisterDialog
     },
+    sockets: {
+        connect: () => {
+            console.log('connected')
+        }
+    },
     computed: {
         ...mapGetters(['user']),
     },
     methods: {
-        ...mapActions(['authUserLogin', 'authUserRegister', 'getVerifiedUserByToken',]),
+        ...mapActions([
+            'authUserLogin',
+            'authUserRegister',
+            'getVerifiedUserByToken',
+        ]),
         async login({username, password}) {
             try {
                 this.isSubmitting = true;
@@ -69,13 +78,13 @@ export default {
                 path: '/'
             });
         },
-        async register(username, email, password) {
+        async register(username, email, password, buddies) {
             try {
                 this.isSubmitting = true;
-                await this.authUserRegister({username, email, password});
+                await this.authUserRegister({ username, email, password, buddies });
                 this.goToAuthenticatedHome();
             } catch (err) {
-                console.log(`Failed registering`);
+                console.log(`Failed registering. Error: ${err}`);
             }
             this.cancelDialog();
             this.isSubmitting = false;

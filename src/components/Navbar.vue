@@ -8,11 +8,16 @@
                     </v-btn>
                 </div>
             </v-flex>
-            <v-flex class="xs10 pt-4 pb-4">
+            <v-flex class="xs9 pt-4 pb-4">
                 <h3> Welcome to Coffee Time! </h3>
             </v-flex>
-            <v-flex xs1 right pt-2 v-if="user.isLoggedIn">
-                <v-btn flat @click="logUserOut()" color="">
+            <v-flex xs1 v-if="user.isLoggedIn">
+                <v-btn flat fab @click="goToBuddiesView()" color="">
+                    <v-icon color="teal">group</v-icon>
+                </v-btn>
+            </v-flex>
+            <v-flex xs1 right v-if="user.isLoggedIn">
+                <v-btn flat fab @click="logUserOut()" color="">
                     <v-icon color="teal">logout</v-icon>
                 </v-btn>
             </v-flex>
@@ -62,6 +67,13 @@ export default {
     },
     computed: {
         ...mapGetters(['user'])
+    },
+    methods: {
+        goToBuddiesView() {
+            this.$router.push({
+                path: '/buddies'
+            });
+        }
     },
     data() {
         return {

@@ -67,7 +67,6 @@
                     <v-progress-circular
                         v-if="isSubmitting"
                         :size="50"
-                        class="sagi"
                         color="teal darken-2"
                         indeterminate
                     ></v-progress-circular>
@@ -91,7 +90,7 @@ export default {
             this.resetValues();
         },
         attemptRegister() {
-            this.$emit('attemptRegister', this.username, this.email, this.password);
+            this.$emit('attemptRegister', this.username, this.email, this.password, this.buddies);
             this.resetValues();
         },
         resetValues() {
@@ -99,6 +98,7 @@ export default {
             this.username = '';
             this.email = '';
             this.password = '';
+            this.buddies = [];
         },
         toggleBuddy(buddy) {
             let buddyIdx = this.buddies.indexOf(buddy);
@@ -119,15 +119,18 @@ export default {
             buddies: [],
             buddiesList: [
                 {
-                    name: 'alexa',
+                    id: 38,
+                    username: 'alexa',
                     imgSrc: 'https://tinyfac.es/data/avatars/03F55412-DE8A-4F83-AAA6-D67EE5CE48DA-200w.jpeg',
                 },
                 {
-                    name: 'john',
+                    id: 39,
+                    username: 'john',
                     imgSrc: 'https://tinyfac.es/data/avatars/26CFEFB3-21C8-49FC-8C19-8E6A62B6D2E0-200w.jpeg',
                 },
                 {
-                    name: 'nathan',
+                    id: 40,
+                    username: 'nathan',
                     imgSrc: 'https://tinyfac.es/data/avatars/282A12CA-E0D7-4011-8BDD-1FAFAAB035F7-200w.jpeg',
                 },
             ],
