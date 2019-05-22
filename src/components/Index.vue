@@ -46,22 +46,19 @@ import BuddiesCoffeeTime from '@/components/Room/BuddiesCoffeeTime';
 export default {
     name: 'Index',
     components: {
-        BuddiesCoffeeTime
+        BuddiesCoffeeTime,
     },
     sockets: {
-        // sendCoffeeTimeInvitationToBuddies(buddyIdList) {
-            
-        // },
         receiveCoffeeTimeInvitation({ buddies, minutes }) {
             if(buddies.indexOf(this.user.username) !== -1) {
                 console.log('I AM a FRIEND!');
                 this.beginCoffeeTimeStepsPopup();
             }
             console.log('lol check what ive been through!', buddies, minutes);
-        }
+        },
     },
     computed: {
-        ...mapGetters(['user', 'buddies'])
+        ...mapGetters(['user', 'buddies']),
     },
     methods: {
         ...mapActions(['getVerifiedUserByToken']),
@@ -89,13 +86,10 @@ export default {
         try {
             if (!this.user.isLoggedIn) {
                 await this.getVerifiedUserByToken();
-                console.log('loool', this.buddies);
             }
         } catch (err) {
             this.$router.push('/auth')
         }
-    },
-    async created () {
     },
     data() {
         return {

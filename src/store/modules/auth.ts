@@ -6,12 +6,12 @@ const state = {
 };
 
 const mutations = {
-    [types.AUTH_USER_LOGIN](state: any, {username, password}: any): any {
+    [types.AUTH_USER_LOGIN](state: any, { username, password }: any): any {
         state.user.username = username;
         state.user.password = password;
         state.user.isLoggedIn = true;
     },
-    [types.AUTH_USER_REGISTER](state: any, {username, email, password}: any): any {
+    [types.AUTH_USER_REGISTER](state: any, { username, email, password }: any): any {
         state.user.email = email;
         state.user.username = username;
         state.user.password = password;
@@ -22,11 +22,11 @@ const mutations = {
     },
     [types.AUTH_USER_LOGOUT](state: any): any {
         state.user = new User();
-    }
+    },
 };
 
 const actions = {
-    authUserLogin: async ({ commit, dispatch }: any, {username, password}: any): Promise<any> => {
+    authUserLogin: async ({ commit, dispatch }: any, { username, password }: any): Promise<any> => {
         try {
             let { user, token } = await AuthApi.login(username, password);
             localStorage.setItem('access_token', token);
@@ -52,7 +52,6 @@ const actions = {
     getVerifiedUserByToken: async ({ commit, dispatch }: any): Promise<any> => {
         try {
             let { user } = await AuthApi.getVerifiedUserByToken();
-            console.log('asdasdasd')
             dispatch('setUserBuddies', [...user.buddies], { root: true });
             commit(types.AUTH_USER_LOGIN, user);
             return state.user;
