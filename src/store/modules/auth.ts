@@ -12,10 +12,11 @@ const mutations = {
         state.user = new User(user);
         state.user.isLoggedIn = true;
     },
-    [types.AUTH_USER_REGISTER](state: any, { username, email, password }: any): any {
-        state.user.email = email;
-        state.user.username = username;
-        state.user.password = password;
+    [types.AUTH_USER_REGISTER](state: any, user: any): any {
+        // state.user.email = email;
+        // state.user.username = username;
+        // state.user.password = password;
+        state.user = new User(user);
         state.user.isLoggedIn = true;
     },
     [types.AUTH_SET_BUDDIES](state: any, { buddies }: any): any {

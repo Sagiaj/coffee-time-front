@@ -65,16 +65,11 @@ export default {
     components: {
         BuddyList
     },
-    watch: {
-        'amendedBuddies' () {
-            console.log('changed! building object...');
-        }
-    },
     computed: {
         ...mapGetters(['buddies', 'filteredBuddies', 'user']),
     },
     methods: {
-        ...mapActions(['saveBuddies', 'queryBuddiesLike']),
+        ...mapActions(['saveBuddies', 'queryBuddiesLike', 'resetQuerySelection']),
         async searchBuddies() {
             let isLogicalSubResult = (this.searchText.length > 1) && (this.filteredBuddies.length < 1);
             if (!isLogicalSubResult) {
@@ -100,7 +95,8 @@ export default {
         },
         buildAmendedBuddiesObject() {
             let obj = {};
-            this.amendedBuddiesById = this.amendedBuddies.map(buddy => obj[buddy.id] = buddy);
+            this.amendedBuddies.map(buddy => obj[buddy.id] = buddy);
+            this.amendedBuddiesById = obj;
         },
         async saveChanges() {
             let newBuddies = await this.saveBuddies({
@@ -112,6 +108,10 @@ export default {
     },
     mounted() {
         this.resetBuddiesList();
+    },
+    destroyed() {
+        this.resetBuddiesList();
+        this.resetQuerySelection();
     },
     data() {
         return {

@@ -39,25 +39,36 @@ const actions = {
             return Promise.reject(err);
         }
     },
-    async queryBuddiesLike({ commit }: any, expression: string) {
+    async queryBuddiesLike({ commit, rootState }: any, expression: string) {
         try {
             if (expression.length < 1) {
                 commit(types.BUDDY_QUERY_SET_RESULT, User.parseToUserList([]));
                 return false;
             }
             let { buddies }: any = await buddiesApi.getMatchingBuddies(expression);
-            let parsedBuddies = User.parseToUserList(buddies);
+            let { user } = rootState.auth;
+            let buddiesWithoutUser: Array<any> = buddies.filter((buddy: any) => buddy.id !== user.id);
+            let parsedBuddies = User.parseToUserList(buddiesWithoutUser);
             commit(types.BUDDY_QUERY_SET_RESULT, parsedBuddies);
         } catch (err) {
             console.log(`Errored in queryBuddiesLike: ${err}`);
             return Promise.reject(err);
         }
     },
-    saveBuddies: async ({ commit, rootState, dispatch }: any, {user, buddies}: {user: User, buddies: Array<any>}): Promise<any> => {
+    async resetQuerySelection({ commit }: any) {
+        try {
+            commit(types.BUDDY_QUERY_SET_RESULT, []);
+        } catch (err) {
+            console.log(`Errored in resetQuerySelection. Error: ${err}`);
+            return Promise.reject(err);
+        }
+    },
+    saveBuddies: async ({ commit, rootState, dispatch }: any, { user, buddies }: { user: User, buddies: Array<any> }): Promise<any> => {
         try {
             let returnedBuddies = await buddiesApi.saveUserBuddies(user.id, buddies);
-            dispatch('setUserBuddies', returnedBuddies);
-            commit(types.SET_USER_BUDDIES, returnedBuddies);
+            console.log('returned:', returnedBuddies);
+            dispatch('setUserBuddies', buddies);
+            commit(types.SET_USER_BUDDIES, buddies);
         } catch (err) {
             console.log(`Errored in buddies/saveBuddies. Error: ${err}`);
             return Promise.reject(err);
@@ -67,7 +78,6 @@ const actions = {
 
 const getters = {
     buddies(): Array<any> {
-        console.log('returning state buddies', state);
         return state.buddies;
     },
     filteredBuddies() {

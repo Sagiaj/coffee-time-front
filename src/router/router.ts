@@ -40,7 +40,6 @@ router.beforeEach(async (to, from, next) => {
         query: { redirect: to.fullPath },
       });
     } else {
-      console.log('lololol')
       next();
     }
   } else {

@@ -27,9 +27,8 @@ export default {
   },
   async created() {
       try {
-          if (!this.user.isLoggedIn) {
-              await this.getVerifiedUserByToken();
-          }
+        // console.log('trying to get user', this.user)
+        await this.getVerifiedUserByToken();
       } catch (err) {
           this.$router.push('/auth')
       }
