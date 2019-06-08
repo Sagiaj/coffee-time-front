@@ -6,9 +6,10 @@ const state = {
 };
 
 const mutations = {
-    [types.AUTH_USER_LOGIN](state: any, { username, password }: any): any {
-        state.user.username = username;
-        state.user.password = password;
+    [types.AUTH_USER_LOGIN](state: any, user: any): any {
+        // state.user.username = username;
+        // state.user.password = password;
+        state.user = new User(user);
         state.user.isLoggedIn = true;
     },
     [types.AUTH_USER_REGISTER](state: any, { username, email, password }: any): any {

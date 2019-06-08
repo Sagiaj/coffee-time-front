@@ -15,11 +15,24 @@
 
 <script>
 import Navbar from '@/components/Navbar';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'App',
   components: {
     Navbar,
+  },
+  computed: {
+    ...mapGetters(['user']),
+  },
+  async created() {
+      try {
+          if (!this.user.isLoggedIn) {
+              await this.getVerifiedUserByToken();
+          }
+      } catch (err) {
+          this.$router.push('/auth')
+      }
   },
   data() {
     return {

@@ -4,6 +4,7 @@ import buddiesApi from '../../api/services/buddies';
 
 const state = {
     buddies: [],
+    filteredBuddies: [],
 };
 
 const mutations = {
@@ -12,13 +13,16 @@ const mutations = {
     },
     [types.SET_USER_BUDDIES](state: any, buddies: Array<any>): any {
         state.buddies = buddies;
-    }
+    },
+    [types.BUDDY_QUERY_SET_RESULT](state: any, buddies: []) {
+        state.filteredBuddies = buddies;
+    },
 };
 
 const actions = {
     getBuddies: async ({ commit, rootState }: any, user: User): Promise<any> => {
         try {
-            let buddies = await buddiesApi.getBuddies(user.id);
+            let buddies = User.parseToUserList(await buddiesApi.getBuddies(user.id));
             commit(types.SET_USER_BUDDIES, buddies);
         } catch (err) {
             console.log(`Errored in buddies/getBuddies. Error: ${err}`);
@@ -27,15 +31,29 @@ const actions = {
     },
     setUserBuddies: async ({ commit }: any, buddies: Array<any>): Promise<any> => {
         try {
-            commit(types.SET_USER_BUDDIES, buddies);
-            console.log(`commited buddies:`, state.buddies)
-            return buddies;
+            let parsedBuddies = User.parseToUserList(buddies);
+            commit(types.SET_USER_BUDDIES, parsedBuddies);
+            return parsedBuddies;
         } catch (err) {
             console.log(`Errored in buddies/setUserBuddies. Error: ${err}`);
             return Promise.reject(err);
         }
     },
-    saveBuddies: async ({ commit, rootState, dispatch }: any, user: User, buddies: Array<any>): Promise<any> => {
+    async queryBuddiesLike({ commit }: any, expression: string) {
+        try {
+            if (expression.length < 1) {
+                commit(types.BUDDY_QUERY_SET_RESULT, User.parseToUserList([]));
+                return false;
+            }
+            let { buddies }: any = await buddiesApi.getMatchingBuddies(expression);
+            let parsedBuddies = User.parseToUserList(buddies);
+            commit(types.BUDDY_QUERY_SET_RESULT, parsedBuddies);
+        } catch (err) {
+            console.log(`Errored in queryBuddiesLike: ${err}`);
+            return Promise.reject(err);
+        }
+    },
+    saveBuddies: async ({ commit, rootState, dispatch }: any, {user, buddies}: {user: User, buddies: Array<any>}): Promise<any> => {
         try {
             let returnedBuddies = await buddiesApi.saveUserBuddies(user.id, buddies);
             dispatch('setUserBuddies', returnedBuddies);
@@ -44,13 +62,16 @@ const actions = {
             console.log(`Errored in buddies/saveBuddies. Error: ${err}`);
             return Promise.reject(err);
         }
-    }
+    },
 };
 
 const getters = {
     buddies(): Array<any> {
         console.log('returning state buddies', state);
         return state.buddies;
+    },
+    filteredBuddies() {
+        return state.filteredBuddies;
     },
 };
 

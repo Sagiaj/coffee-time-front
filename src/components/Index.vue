@@ -82,15 +82,6 @@ export default {
             this.ongoingCoffeeTime = false;
         },
     },
-    async mounted() {
-        try {
-            if (!this.user.isLoggedIn) {
-                await this.getVerifiedUserByToken();
-            }
-        } catch (err) {
-            this.$router.push('/auth')
-        }
-    },
     data() {
         return {
             ongoingCoffeeTime: false,

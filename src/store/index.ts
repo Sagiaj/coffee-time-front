@@ -5,6 +5,7 @@ import Vue from 'vue';
 import auth from './modules/auth';
 import buddies from './modules/buddies';
 import coffeeTimeRoom from './modules/coffee-time-room';
+
 Vue.use(Vuex);
 
 export default new Vuex.Store({

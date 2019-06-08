@@ -8,7 +8,7 @@ class BuddiesApi extends AxiosService {
 
     async saveUserBuddies(userId: number, buddies: Array<any>): Promise<any> {
         try {
-            let url = `/users/${userId}/buddies`;
+            let url = `api/users/${userId}/buddies`;
             let bodyParams = { buddies };
             let data = await this.send(url, AxiosService.HTTP_METHODS.post, null, bodyParams);
             return data;
@@ -20,11 +20,22 @@ class BuddiesApi extends AxiosService {
 
     async getBuddies(userId: number): Promise<Array<object>> {
         try {
-            let url = `users/${userId}/buddies`;
+            let url = `api/users/${userId}/buddies`;
             let data = await this.send(url, AxiosService.HTTP_METHODS.get);
             return data;
         } catch (err) {
             console.log(`Errored in BuddiesApi/getBuddies. Error: ${err}`);
+            return Promise.reject(err);
+        }
+    }
+
+    async getMatchingBuddies(expression: string): Promise<Array<object>> {
+        try {
+            let url = `api/users/search/${expression}`;
+            let data = await this.send(url, AxiosService.HTTP_METHODS.get);
+            return data;
+        } catch (err) {
+            console.log(`Errored in BuddiesApi/getMatchingBuddies`);
             return Promise.reject(err);
         }
     }

@@ -12,9 +12,18 @@
                 <h3> Welcome to Coffee Time! </h3>
             </v-flex>
             <v-flex xs1 v-if="user.isLoggedIn">
-                <v-btn flat fab @click="goToBuddiesView()" color="">
-                    <v-icon color="teal">group</v-icon>
-                </v-btn>
+                <v-layout row wrap>
+                    <v-flex xs6>
+                        <v-btn flat fab @click="goToBuddiesView()" color="">
+                            <v-icon color="teal">group_add</v-icon>
+                        </v-btn>
+                    </v-flex>
+                    <v-flex xs6>
+                        <v-btn flat fab @click="goToHomeView()" color="">
+                            <v-icon color="teal">home</v-icon>
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
             </v-flex>
             <v-flex xs1 right v-if="user.isLoggedIn">
                 <v-btn flat fab @click="logUserOut()" color="">
@@ -63,6 +72,11 @@ export default {
         goToBuddiesView() {
             this.$router.push({
                 path: '/buddies'
+            });
+        },
+        goToHomeView() {
+            this.$router.push({
+                path: '/'
             });
         },
         ...mapActions(['logout']),
