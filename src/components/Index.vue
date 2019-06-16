@@ -30,7 +30,9 @@
                     </v-flex>
                     <v-flex xs11 justify-center text-xs-center>
                         <h1>Waiting for your friends...</h1>
-                        <BuddiesCoffeeTime/>
+                        <BuddiesCoffeeTime
+                            :hasBeenInvited="true"
+                            @abortCoffeeTime="abortCoffeeTime()"/>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -49,16 +51,16 @@ export default {
         BuddiesCoffeeTime,
     },
     sockets: {
-        receiveCoffeeTimeInvitation({ buddies, minutes }) {
+        receiveCoffeeTimeInvitation({ invitedToRoom, minutes }) {
             if(buddies.indexOf(this.user.username) !== -1) {
                 console.log('I AM a FRIEND!');
                 this.beginCoffeeTimeStepsPopup();
             }
-            console.log('lol check what ive been through!', buddies, minutes);
+            console.log('lol check what ive been through!', minutes);
         },
     },
     computed: {
-        ...mapGetters(['user', 'buddies']),
+        ...mapGetters(['user', 'buddies', 'roomName']),
     },
     methods: {
         ...mapActions(['getVerifiedUserByToken']),
@@ -70,7 +72,8 @@ export default {
             this.ongoingCoffeeTime = true;
             let data = {
                 buddies: [this.user, ...this.buddies],
-                minutes
+                minutes,
+                username: this.user.username
             };
             console.log(`Emitting: sendCoffeeTimeInvitationToBuddies`);
             this.$socket.emit('sendCoffeeTimeInvitationToBuddies', data);
@@ -78,9 +81,22 @@ export default {
             // open group coffee time popup for all users
             // send socket to popup for all
         },
+        async approveCoffeeTimeInvitation() {
+            this.$socket.emit('joinRoom', invitedToRoom);
+            this.setRoomName(invitedToRoom);
+            this.ongoingCoffeeTime = true;
+        },
         async abortCoffeeTime() {
             this.ongoingCoffeeTime = false;
+            this.userLeaveRoom();
         },
+        async userLeaveRoom() {
+            this.$socket.emit('leaveRoom', this.roomName);
+            this.setRoomName(null);
+        },
+    },
+    created () {
+        this.$socket.username = this.user.username;
     },
     data() {
         return {
@@ -99,7 +115,8 @@ export default {
                     text: `30 Minutes`,
                     minutes: 30
                 }
-            ]
+            ],
+            approval: false
         };
     },
 };

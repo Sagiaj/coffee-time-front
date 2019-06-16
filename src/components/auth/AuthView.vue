@@ -45,7 +45,7 @@ export default {
     },
     sockets: {
         connect: () => {
-            console.log('connected')
+            console.log('connected');
         }
     },
     computed: {
@@ -89,10 +89,19 @@ export default {
             this.cancelDialog();
             this.isSubmitting = false;
         },
+        async attachBuddiesSocketRooms(buddies) {
+            // buddies.forEach(buddy => {
+            //     let roomName = `friendOf_${buddy.username}`;
+            //     this.$socket.emit('joinRoom', roomName);
+            // });
+            console.log('joining!', `private_${this.user.username}`)
+            this.$socket.emit('joinRoom', `private_${this.user.username}`);
+        },
     },
     async created() {
         try {
             let user = await this.getVerifiedUserByToken();
+            this.attachBuddiesSocketRooms(user.buddies);
             if (user.isLoggedIn) {
                 this.goToAuthenticatedHome();
             }

@@ -81,7 +81,6 @@ export default {
             this.amendedBuddiesById[buddy.id] = buddy;
         },
         removeBuddy(buddy, idx) {
-            console.log('removing buddy');
             this.amendedBuddies.splice(idx, 1);
             this.amendedBuddiesById[buddy.id] = undefined;
         },
