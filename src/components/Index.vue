@@ -22,17 +22,10 @@
         <transition name="slide-fade" mode="out-in">
             <v-container grid-list-lg v-if="ongoingCoffeeTime">
                 <v-layout row wrap>
-                    <v-flex xs1>
-                        <v-btn wrap flat icon color="teal darken-2"
-                            @click="abortCoffeeTime">
-                            <v-icon>cancel</v-icon>
-                        </v-btn>
-                    </v-flex>
                     <v-flex xs11 justify-center text-xs-center>
-                        <h1>Waiting for your friends...</h1>
                         <BuddiesCoffeeTime
                             :hasBeenInvited="true"
-                            @abortCoffeeTime="abortCoffeeTime()"/>
+                            @cancelEvent="abortCoffeeTime"/>
                     </v-flex>
                 </v-layout>
             </v-container>
@@ -51,21 +44,19 @@ export default {
         BuddiesCoffeeTime,
     },
     sockets: {
-        receiveCoffeeTimeInvitation({ invitedToRoom, minutes }) {
-            if(buddies.indexOf(this.user.username) !== -1) {
-                console.log('I AM a FRIEND!');
-                this.beginCoffeeTimeStepsPopup();
-            }
-            console.log('lol check what ive been through!', minutes);
+        receiveCoffeeTimeInvitation({ minutes, username }) {
+            let invitedToRoom = `private_${username}`;
+            console.log('received event, minutes:', minutes, 'room:', invitedToRoom);
+            this.beginCoffeeTimeStepsPopup();
         },
     },
     computed: {
         ...mapGetters(['user', 'buddies', 'roomName']),
     },
     methods: {
-        ...mapActions(['getVerifiedUserByToken']),
+        ...mapActions(['getVerifiedUserByToken', 'setRoomName']),
         async beginCoffeeTimeStepsPopup() {
-            this.coffeeTimePopup = true;
+            this.ongoingCoffeeTime = true;
         },
         async triggerCoffeeTime(minutes) {
             // gather buddies id list plus current user id
@@ -81,7 +72,7 @@ export default {
             // open group coffee time popup for all users
             // send socket to popup for all
         },
-        async approveCoffeeTimeInvitation() {
+        async approveCoffeeTimeInvitation(invitedToRoom) {
             this.$socket.emit('joinRoom', invitedToRoom);
             this.setRoomName(invitedToRoom);
             this.ongoingCoffeeTime = true;
@@ -91,7 +82,7 @@ export default {
             this.userLeaveRoom();
         },
         async userLeaveRoom() {
-            this.$socket.emit('leaveRoom', this.roomName);
+            await this.$socket.emit('leaveRoom', this.roomName);
             this.setRoomName(null);
         },
     },
@@ -116,13 +107,12 @@ export default {
                     minutes: 30
                 }
             ],
-            approval: false
         };
     },
 };
 </script>
 
-<style scoped>
+<style>
 .coffee-times-btn{
     font-size: 1.4em;
 }
